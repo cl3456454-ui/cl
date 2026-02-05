@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>运动打卡记录</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f6fb;
+      --card: #ffffff;
+      --accent: #4c6fff;
+      --accent-dark: #324cdd;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft Yahei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(120deg, #4c6fff, #7c3aed);
+      color: #fff;
+      padding: 32px 20px 72px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+
+    header p {
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: -48px auto 60px;
+      padding: 0 20px;
+      display: grid;
+      gap: 24px;
+      grid-template-columns: minmax(280px, 360px) 1fr;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .summary {
+      display: grid;
+      gap: 16px;
+    }
+
+    .summary-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .summary-item span {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .summary-item strong {
+      font-size: 22px;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+    }
+
+    .list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4c6fff;
+      font-weight: 600;
+    }
+
+    .entry {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .entry-head {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .entry-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .entry-meta {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .entry-actions button {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .entry-actions button:hover {
+      background: #e5e7eb;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 40px 0;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>运动打卡记录</h1>
+    <p>用简单的打卡养成运动习惯，记录你的每一次进步。</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>新增打卡</h2>
+      <form id="checkin-form">
+        <div>
+          <label for="date">日期</label>
+          <input type="date" id="date" required />
+        </div>
+        <div>
+          <label for="activity">运动类型</label>
+          <select id="activity" required>
+            <option value="">请选择</option>
+            <option>跑步</option>
+            <option>力量训练</option>
+            <option>骑行</option>
+            <option>游泳</option>
+            <option>瑜伽</option>
+            <option>球类运动</option>
+            <option>徒步</option>
+          </select>
+        </div>
+        <div>
+          <label for="duration">时长（分钟）</label>
+          <input type="number" id="duration" min="10" max="300" step="5" placeholder="例如 45" required />
+        </div>
+        <div>
+          <label for="intensity">强度感受</label>
+          <select id="intensity" required>
+            <option value="">请选择</option>
+            <option>轻松</option>
+            <option>适中</option>
+            <option>挑战</option>
+          </select>
+        </div>
+        <div>
+          <label for="notes">备注</label>
+          <textarea id="notes" placeholder="今天的状态、配速、心率等"></textarea>
+        </div>
+        <button type="submit">保存打卡</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="list-header">
+        <h2>本月记录</h2>
+        <span class="tag" id="month-tag">本月</span>
+      </div>
+      <div class="summary" id="summary"></div>
+      <div class="list" id="list"></div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("checkin-form");
+    const dateInput = document.getElementById("date");
+    const activityInput = document.getElementById("activity");
+    const durationInput = document.getElementById("duration");
+    const intensityInput = document.getElementById("intensity");
+    const notesInput = document.getElementById("notes");
+    const listEl = document.getElementById("list");
+    const summaryEl = document.getElementById("summary");
+    const monthTag = document.getElementById("month-tag");
+
+    const STORAGE_KEY = "fitness-checkins";
+
+    const today = new Date();
+    dateInput.valueAsDate = today;
+    monthTag.textContent = `${today.getMonth() + 1} 月`;
+
+    const loadCheckins = () => {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        return [];
+      }
+      try {
+        return JSON.parse(raw);
+      } catch (error) {
+        console.error("无法读取缓存数据", error);
+        return [];
+      }
+    };
+
+    const saveCheckins = (items) => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    };
+
+    const renderSummary = (items) => {
+      const totalMinutes = items.reduce((sum, item) => sum + item.duration, 0);
+      const totalSessions = items.length;
+      const average = totalSessions ? Math.round(totalMinutes / totalSessions) : 0;
+      const topActivity = items.reduce((acc, item) => {
+        acc[item.activity] = (acc[item.activity] || 0) + 1;
+        return acc;
+      }, {});
+      const mostActivity = Object.entries(topActivity).sort((a, b) => b[1] - a[1])[0];
+
+      summaryEl.innerHTML = `
+        <div class="summary-item">
+          <span>累计运动时长</span>
+          <strong>${totalMinutes} 分钟</strong>
+        </div>
+        <div class="summary-item">
+          <span>累计打卡次数</span>
+          <strong>${totalSessions} 次</strong>
+        </div>
+        <div class="summary-item">
+          <span>平均每次时长</span>
+          <strong>${average} 分钟</strong>
+        </div>
+        <div class="summary-item">
+          <span>最常运动</span>
+          <strong>${mostActivity ? mostActivity[0] : "暂无"}</strong>
+        </div>
+      `;
+    };
+
+    const renderList = (items) => {
+      if (!items.length) {
+        listEl.innerHTML = "<div class=\"empty\">还没有打卡记录，快来创建第一条吧！</div>";
+        return;
+      }
+
+      listEl.innerHTML = items
+        .map(
+          (item) => `
+        <article class="entry">
+          <div class="entry-head">
+            <div>
+              <div class="entry-title">${item.activity}</div>
+              <div class="entry-meta">${item.date} · ${item.duration} 分钟 · ${item.intensity}</div>
+            </div>
+            <div class="entry-actions">
+              <button type="button" data-id="${item.id}">删除</button>
+            </div>
+          </div>
+          <div class="entry-meta">${item.notes ? item.notes : "暂无备注"}</div>
+        </article>
+      `
+        )
+        .join("");
+    };
+
+    const sortCheckins = (items) =>
+      items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    const refresh = () => {
+      const items = sortCheckins(loadCheckins());
+      renderSummary(items);
+      renderList(items);
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const newItem = {
+        id: Date.now(),
+        date: dateInput.value,
+        activity: activityInput.value,
+        duration: Number(durationInput.value),
+        intensity: intensityInput.value,
+        notes: notesInput.value.trim(),
+      };
+
+      const items = loadCheckins();
+      items.push(newItem);
+      saveCheckins(items);
+      form.reset();
+      dateInput.valueAsDate = new Date();
+      refresh();
+    });
+
+    listEl.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLButtonElement)) {
+        return;
+      }
+      const id = Number(target.dataset.id);
+      const items = loadCheckins().filter((item) => item.id !== id);
+      saveCheckins(items);
+      refresh();
+    });
+
+    refresh();
+  </script>
+</body>
+</html>
